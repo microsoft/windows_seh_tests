@@ -1,3 +1,44 @@
+# Windows C/C++ Structured Exception Handling Validation Test Suite
+
+Introduction
+============
+
+Windows Structured Exception Handling (SEH) is a C/C++ projection of the *Windows ABI Exception Dispatching and Reliable Stack Unwinding*. This projection is materialized as the following language keywords: ____try__, ____except__, ____finally__ and ____leave__.
+
+In Windows, __setjmp/longjmp__ also implement Reliable Stack Unwinding when jumping to a another scope, higher in the stack.
+
+SEH is implemented by 3 components:
+-	Windows OS Runtime – As mentioned above, the OS provides the foundation services for Exception Dispatching and Reliable Stack Unwinding, on top of which the language-specific runtime provides its own syntax and contracts;
+-	Compiler – the compiler is responsible for two very important roles:
+    - Generate the necessary metadata or setup code required by the Windows OS Runtime to correctly perform EH Dispatching (looking for the handler) and Stack Unwinding. The amount and format of the information generated to achieve this varies by CPU architecture but, in most cases (e.g. x86_64, arm64 and arm), this involves adding metadata to the binaries that describes where each function saves important registers in the stack, and how much stack is used for local variables.
+    - Generate the needed glue code, usually in the form of funclets, that allows the C-Runtime to invoke the code provided as part of the __except filter and __finally blocks. This might also include generating code to help the C Runtime performing any local unwinding, such as restoring function-local significant register state.
+-	C-Runtime – The C-language runtime provides the connection between the Windows OS Runtime and the code funclets that the Compiler generated for the code around the SEH keywords. The C-Runtime will also be responsible for providing frame-local unwinding – in other words, handle the SEH flow control within the scope of one frame (function). Note and the C-Runtime also provides other exception syntaxes, like the standard C++ Exception Handling (throw + catch), which do not stack on top of the Windows OS exception. In other words, C++ EH can handle its own language specific exception, but not those raised by the OS or CPU (such as Access Violation or Division by Zero).
+These tests provide a comprehensive coverage over the plethora of scenarios a compiler and both runtimes may encounter when dealing with SEH. It is fundamental to pass these tests every time changes are made into the OS, the C-Runtime or the Compiler.
+
+Build the tests
+===============
+All following tests can and should be compiled and executed with varying degrees of optimizations, to make sure there are no issues or regressions specific to a given optimization or codegen option. However, they should always be compiled with an option to prevent function inlining. When using Microsoft Visual C++ compilers, that option is /Ob0. If inlining occurs, some of the tests may have reduced coverage.
+After compiling each test, just run the EXE. No parameters needed
+
+
+XCPT4
+-----
+This test focuses on mostly on validating the Compiler and the C-Runtime
+It offers a complete coverage of local-frame SEH variations. This means, variations where the __try/__except/__finally blocks involved, as well as the source of the exception are all within the same frame, for the greatest part. There are a few variations included where multiple frame is also tested, but cross-frame and even cross-module is covered in a more comprehensive way on another test.
+It is OK to observe some skipped tests in the output. Not all variations are supported on all architectures. “passed” and “skipped” messages are benign. There should be no “failed” messages and the test should exit normally – no crashes.
+
+NESTED_COLLIDED
+---------------
+As the name indicates, this test will validate the Nested Exception and Collided Unwind cases. In other words:
+-	Exceptions that are raised within an __except filter (from a previous exception), which result in a Nested Dispatch;
+-	Exceptions that are raised within a __finally block (from a previous exception), which result in a Collided Unwind.
+
+XFRAME_TEST
+-----------
+This test was specifically designed to validate the correct EH across multiple modules, more specifically, the interoperability between binaries generated from different compilers. It involves two modules: one EXE and one DLL. To run this test, compile one of the modules (e.g. the EXE) with the latest stable Microsoft’s Visual C++ compiler, and the other module (e.g. the DLL) with the compiler you want to test. Then run the test. If it passes, switch which module gets compiled by which compiler and run the test again.
+
+
+
 
 # Contributing
 
