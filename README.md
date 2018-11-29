@@ -17,7 +17,7 @@ These tests provide a comprehensive coverage over the plethora of scenarios a co
 
 Build the tests
 ===============
-All following tests can and should be compiled and executed with varying degrees of optimizations, to make sure there are no issues or regressions specific to a given optimization or codegen option. However, they should always be compiled with an option to prevent function inlining. When using Microsoft Visual C++ compilers, that option is /Ob0. If inlining occurs, some of the tests may have reduced coverage.
+All following tests can and should be compiled and executed with varying degrees of optimizations, to make sure there are no issues or regressions specific to a given optimization or codegen option. However, they should always be compiled with an option to prevent function inlining. When using Microsoft Visual C++ compilers, that option is __/Ob0__. If inlining occurs, some of the tests may have reduced coverage.
 After compiling each test, just run the EXE. No parameters needed
 
 
