@@ -4,7 +4,7 @@ Copyright (c) Microsoft Corporation
 
 Module Name:
 
-    wow_xframe_eh_dll.c
+    xframe_eh_dll.c
 
 Abstract:
 

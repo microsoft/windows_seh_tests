@@ -4,7 +4,7 @@ Copyright (c) Microsoft Corporation
 
 Module Name:
 
-    wow_xframe_eh_exe.c
+    xframe_eh_exe.c
 
 Abstract:
 
@@ -68,7 +68,7 @@ LoadXframeDll()
     HMODULE hXframeDll;
     SETUP_DATA_FUNCTION setup_fault_function;
 
-    hXframeDll = LoadLibraryExW(L"wow_xframe_eh_dll.dll", NULL, 0);
+    hXframeDll = LoadLibraryExW(L"xframe_eh_dll.dll", NULL, 0);
     if (hXframeDll == NULL)
         __debugbreak();
 

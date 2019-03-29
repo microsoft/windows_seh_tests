@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.28216.51
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xcpt4", "xcpt4\xcpt4.vcxproj", "{5D4FA065-5A6D-44A7-9352-0FB1F9814F35}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wow_xframe_eh_exe", "wow_xframe_eh_exe\wow_xframe_eh_exe.vcxproj", "{7CF1A0C7-1724-4781-A997-9A5A05734501}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xframe_eh_exe", "xframe_eh_exe\xframe_eh_exe.vcxproj", "{7CF1A0C7-1724-4781-A997-9A5A05734501}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wow_xframe_eh_dll", "wow_xframe_eh_dll\wow_xframe_eh_dll.vcxproj", "{8F6A8632-BDB4-42D5-A4BD-D2C33239BFFD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xframe_eh_dll", "xframe_eh_dll\xframe_eh_dll.vcxproj", "{8F6A8632-BDB4-42D5-A4BD-D2C33239BFFD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nested_collided", "nested_collided\nested_collided.vcxproj", "{11B784C2-C49D-43A4-8672-F227D3532983}"
 EndProject
