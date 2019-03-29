@@ -1,5 +1,5 @@
 
-LIBRARY      wow_xframe_eh_dll
+LIBRARY      xframe_eh_dll
 
 EXPORTS
     setup_data_dll
