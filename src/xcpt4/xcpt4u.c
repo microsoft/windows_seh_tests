@@ -51,6 +51,17 @@ Abstract:
 #define BLUE 0
 #define RED 1
 
+// Add logging macro for better test diagnostics
+#define TEST_LOG(fmt, ...) printf("[TEST] %s:%d - " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+
+// Add error handling macro
+#define TEST_ASSERT(condition, message) \
+    do { \
+        if (!(condition)) { \
+            TEST_LOG("Assertion failed: %s", message); \
+            return STATUS_UNSUCCESSFUL; \
+        } \
+    } while(0)
 
 VOID
 PgTests (
@@ -70,7 +81,7 @@ addtwo (
 )
 
 {
-
+    TEST_LOG("Testing integer overflow with values: %ld, %ld", First, Second);
     RaiseStatus(STATUS_INTEGER_OVERFLOW);
     *Place = First + Second;
     return;
@@ -119,19 +130,18 @@ bar1 (
     _Out_ PLONG Counter
     )
 {
-
+    TEST_LOG("Testing exception handling with status: 0x%lx", Status);
     __try {
         foo1(Status);
-
     } __finally {
         if (abnormal_termination() != FALSE) {
+            TEST_LOG("Exception was handled in finally block");
             *Counter = 99;
-
         } else {
+            TEST_LOG("Normal termination in finally block");
             *Counter = 100;
         }
     }
-
     return;
 }
 
@@ -348,6 +358,40 @@ Test61Part2 (
 #pragma warning(disable:4532)
 #endif
 
+// Add new test for modern Windows exception handling
+VOID
+TestModernSEH(
+    _Inout_ PLONG Counter
+    )
+{
+    TEST_LOG("Testing modern Windows SEH features");
+    
+    // Test VEH (Vectored Exception Handler)
+    PVOID veh = AddVectoredExceptionHandler(1, 
+        [](PEXCEPTION_POINTERS ExceptionInfo) -> LONG {
+            TEST_LOG("VEH caught exception: 0x%lx", ExceptionInfo->ExceptionRecord->ExceptionCode);
+            return EXCEPTION_CONTINUE_SEARCH;
+        });
+    
+    if (veh == NULL) {
+        TEST_LOG("Failed to add VEH");
+        return;
+    }
+
+    __try {
+        // Test hardware exception
+        TEST_LOG("Testing hardware exception");
+        int* ptr = NULL;
+        *ptr = 0;  // This will cause an access violation
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+        TEST_LOG("Exception handler caught access violation");
+        *Counter += 1;
+    }
+
+    // Cleanup
+    RemoveVectoredExceptionHandler(veh);
+    TEST_LOG("Modern SEH test completed");
+}
 
 int
 __cdecl
@@ -2547,6 +2591,12 @@ outside:
     PgTests();
 
     ExTests();
+
+    //
+    // Add new test to main
+    //
+    TEST_LOG("Running modern SEH tests");
+    TestModernSEH(&Counter);
 
     //
     // Announce end of exception test.
