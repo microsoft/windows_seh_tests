@@ -377,7 +377,7 @@ main (
 
     BadAddress = (PLONG)NULL;
     BadByte = (PCHAR)NULL;
-    BadByte += 1;
+    BadByte += 4095;
     BlackHole = &Counter;
 
     //
